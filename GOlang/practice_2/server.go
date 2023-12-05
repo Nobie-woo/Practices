@@ -382,7 +382,7 @@ func editDatabase(query string) {
 
 	case "SPUSH":
 		stack.readStack(file)
-		stack.push(str[2])
+		stack.push(str[3])
 		stack.writeStack(file)
 
 	case "SPOP":
@@ -443,6 +443,7 @@ func handleConnection(conn net.Conn) {
 		}
 		fmt.Print("Запрос: ", string(buf))
 		query = string(buf)
+		break
 	}
 	editDatabase(query)
 }

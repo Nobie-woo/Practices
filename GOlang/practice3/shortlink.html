@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Сокращение ссылок</title>
+  <style>
+    body {
+      background-color: rgb(82, 168, 140);
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 5px;
+      font-size: 1em;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Сокращение ссылок</h1>
+  <form id="shortenForm">
+    <label for="urlInput">Введите URL для сокращения:</label>
+    <input type="text" id="urlInput" name="urlInput">
+    <button type="button" onclick="shortenUrl()">Сократить</button>
+  </form>
+
+  <h2>Результат:</h2>
+  <p id="shortenedUrl"><a id="shortenedLink" href="" target="_blank"></a></p>
+
+  <script>
+    function shortenUrl() {
+    var longUrl = document.getElementById("urlInput").value; // Получение значения длинного URL из элемента с идентификатором "urlInput"
+    var xhr = new XMLHttpRequest(); // Создание нового объекта XMLHttpRequest для отправки асинхронного запроса
+
+    xhr.open("POST", "http://localhost:8080/SHORT", true);
+
+    // Установка заголовков запроса для указания типа содержимого и разрешения на кросс-доменные запросы
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+
+    // Обработка состояния ответа на запрос
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) { // если запрос завершен
+            if (xhr.status === 200) { // и получен успешный ответ
+                // Обработка ответа сервера и вывод пользователю
+                var response = JSON.parse(xhr.responseText);
+                var linkElement = document.getElementById("shortenedLink");
+                linkElement.innerText = response.shortenedUrl;
+                linkElement.href = response.shortenedUrl; // Устанавливаем URL ссылки
+            }
+        }
+    };
+
+    // Преобразование данных (длинного URL) в формат JSON и отправка запроса на сервер
+    var data = JSON.stringify({ "longUrl": longUrl });
+    xhr.send(data);
+}
+
+
+  </script>
+</body>
+</html>
